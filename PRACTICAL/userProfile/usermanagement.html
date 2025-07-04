@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>User Management System</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+    }
+
+    input,
+    button,
+    select {
+      margin: 8px;
+      padding: 6px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>User Management System</h2>
+
+
+  <div>
+    <h3>User Ages</h3>
+    <input type="number" id="ageInput" placeholder="Enter Age" />
+    <button onclick="addAge()">Add Age</button>
+    <button onclick="sortAges()">Sort Ages</button>
+    <button onclick="filterAdults()">Filter Adults (18+)</button>
+    <button onclick="clearAges()">Clear</button>
+    <p id="agesOutput">Ages: []</p>
+  </div>
+
+
+  <div>
+    <h3>User Profile</h3>
+    <input type="text" id="name" placeholder="Name" />
+    <input type="number" id="userAge" placeholder="Age" />
+    <input type="email" id="email" placeholder="Email" />
+    <button onclick="createUser()">Create User</button>
+    <button onclick="updateUser()">Update Email</button>
+    <button onclick="printUser()">Print Details</button>
+    <p id="userOutput">User: None</p>
+  </div>
+
+  <script>
+    let ages = [];
+
+    function addAge() {
+      const age = parseInt(document.getElementById("ageInput").value);
+      age.addEventListener('input', function () {
+        if (!isNaN(age)) {
+          ages.push(age);
+          updateAgesDisplay();
+        } else {
+          alert("Please enter a valid age.");
+        }
+        // if (nameInput.value.trim() !== "") {
+        //   emailInput.disabled = false;
+        // } else {
+        //   emailInput.disabled = true;
+        //   emailInput.value = ""; 
+        // }
+      });
+    }
+
+    function sortAges() {
+      ages.sort((a, b) => a - b);
+      updateAgesDisplay();
+    }
+
+    function filterAdults() {
+      const adults = ages.filter(age => age >= 18);
+      document.getElementById("agesOutput").textContent = "Adults: " + JSON.stringify(adults);
+    }
+
+    function clearAges() {
+      ages = [];
+      updateAgesDisplay();
+    }
+
+    function updateAgesDisplay() {
+      document.getElementById("agesOutput").textContent = "Ages: " + JSON.stringify(ages);
+    }
+
+    // User object
+    let user = {};
+
+    function createUser() {
+      const name = document.getElementById("name").value;
+      const age = parseInt(document.getElementById("userAge").value);
+      const email = document.getElementById("email").value;
+
+      age.addEventListner()
+
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+
+      if (name && !isNaN(age) && email) {
+        user = {
+          name: name,
+          age: age,
+          email: email,
+          printDetails: function () {
+            return `Name: ${this.name}, Age: ${this.age}, Email: ${this.email}`;
+          }
+        };
+        document.getElementById("userOutput").textContent = "User created.";
+      }
+
+
+    }
+
+    function updateUser() {
+      const newEmail = prompt("Enter new email:");
+      if (user.email && newEmail) {
+        user.email = newEmail;
+        document.getElementById("userOutput").textContent = "Email updated.";
+      }
+    }
+
+    function printUser() {
+      if (user.printDetails) {
+        document.getElementById("userOutput").textContent = user.printDetails();
+      } else {
+        document.getElementById("userOutput").textContent = "No user found.";
+      }
+    }
+  </script>
+</body>

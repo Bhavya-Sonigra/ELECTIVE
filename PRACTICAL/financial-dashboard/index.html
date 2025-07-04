@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Financial Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+    input, select, button {
+      padding: 8px;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Financial Calculator</h1>
+
+  <form id="calc-form">
+    <label>
+      Entry 1:
+      <input type="number" id="entry1" step="0.01" required>
+    </label>
+    <br>
+    <label>
+      Entry 2:
+      <input type="number" id="entry2" step="0.01" required>
+    </label>
+    <br>
+    <label>
+      Operation:
+      <select id="operation">
+        <option value="add">Add</option>
+        <option value="subtract">Subtract</option>
+        <option value="multiply">Multiply</option>
+      </select>
+    </label>
+    <br>
+    <button type="submit">Calculate</button>
+  </form>
+
+  <h2 id="result">Result: </h2>
+
+  <script>
+    document.getElementById('calc-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const entry1 = parseFloat(document.getElementById('entry1').value);
+      const entry2 = parseFloat(document.getElementById('entry2').value);
+      const operation = document.getElementById('operation').value;
+      const resultElement = document.getElementById('result');
+
+      if (isNaN(entry1) || isNaN(entry2)) {
+        resultElement.textContent = "Error: Please enter valid numbers.";
+        return;
+      }
+
+      let result;
+      switch (operation) {
+        case 'add':
+          result = entry1 + entry2;
+          break;
+        case 'subtract':
+          result = entry1 - entry2;
+          break;
+        case 'multiply':
+          result = entry1 * entry2;
+          break;
+        default:
+          resultElement.textContent = "Error: Invalid operation selected.";
+          return;
+      }
+
+      resultElement.textContent = `Result: ₹${result.toFixed(2)}`;
+    });
+  </script>
+</body>
+</html>

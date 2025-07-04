@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sequential Form Validation</title>
+</head>
+<body>
+  <h2>Contact Form</h2>
+
+  <form id="contactForm">
+    <label for="name">Name:</label><br />
+    <input type="text" id="name" name="name" /><br /><br />
+
+    <label for="email">Email:</label><br />
+    <input type="email" id="email" name="email" disabled /><br /><br />
+
+    <button type="submit;">Submit</button>
+  </form>
+
+  <div id="output"></div>
+
+  <script>
+    const form = document.getElementById('contactForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const output = document.getElementById('output');
+
+    // Enable email only after name is filled
+    nameInput.addEventListener('input', function () {
+      if (nameInput.value.trim() !== "") {
+        emailInput.disabled = false;
+      } else {
+        emailInput.disabled = true;
+        emailInput.value = ""; 
+      }
+    });
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); 
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+
+      if (name === "") {
+        alert("Please enter your name first.");
+        return;
+      }
+
+      if (email === "") {
+        alert("Please enter your email.");
+        return;
+      }
+
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+
+      output.innerHTML = `
+        <h3>Submitted Info:</h3>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+      `;
+
+    output.style.backgroundColor = "#f0f8ff";
+    output.style.color = "green";
+    output.style.padding = "10px";
+    output.style.border = "2px solid green";
+    output.style.borderRadius = "8px";
+    output.style.marginTop = "15px";
+
+      form.reset();
+      emailInput.disabled = true; 
+    });
+  </script>
+</body>
+</html>
