@@ -1,135 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <title>User Management System</title>
-  <style>
-    body {
-      font-family: Arial;
-      padding: 20px;
-    }
-
-    input,
-    button,
-    select {
-      margin: 8px;
-      padding: 6px;
-    }
-  </style>
-</head>
-
-<body>
-  <h2>User Management System</h2>
-
-
-  <div>
-    <h3>User Ages</h3>
-    <input type="number" id="ageInput" placeholder="Enter Age" />
-    <button onclick="addAge()">Add Age</button>
-    <button onclick="sortAges()">Sort Ages</button>
-    <button onclick="filterAdults()">Filter Adults (18+)</button>
-    <button onclick="clearAges()">Clear</button>
-    <p id="agesOutput">Ages: []</p>
-  </div>
-
-
-  <div>
-    <h3>User Profile</h3>
-    <input type="text" id="name" placeholder="Name" />
-    <input type="number" id="userAge" placeholder="Age" />
-    <input type="email" id="email" placeholder="Email" />
-    <button onclick="createUser()">Create User</button>
-    <button onclick="updateUser()">Update Email</button>
-    <button onclick="printUser()">Print Details</button>
-    <p id="userOutput">User: None</p>
-  </div>
-
-  <script>
-    let ages = [];
-
-    function addAge() {
-      const age = parseInt(document.getElementById("ageInput").value);
-      age.addEventListener('input', function () {
-        if (!isNaN(age)) {
-          ages.push(age);
-          updateAgesDisplay();
-        } else {
-          alert("Please enter a valid age.");
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management System</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for a professional look */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
         }
-        // if (nameInput.value.trim() !== "") {
-        //   emailInput.disabled = false;
-        // } else {
-        //   emailInput.disabled = true;
-        //   emailInput.value = ""; 
-        // }
-      });
-    }
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            margin-bottom: 2rem;
+        }
+        h1, h2 {
+            font-weight: 600;
+            color: #1e293b; /* slate-800 */
+        }
+        h1 {
+            font-size: 2.25rem;
+            border-bottom: 2px solid #e2e8f0; /* slate-200 */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        input[type="text"], input[type="number"], input[type="email"] {
+            border: 1px solid #cbd5e1; /* slate-300 */
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            width: 100%;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3b82f6; /* blue-500 */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+        }
+        .button {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+        }
+        .button:hover {
+            background-color: #2563eb; /* blue-600 */
+        }
+        .button-secondary {
+            background-color: #64748b; /* slate-500 */
+        }
+        .button-secondary:hover {
+            background-color: #475569; /* slate-600 */
+        }
+        .output {
+            margin-top: 1rem;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 1rem;
+            background-color: #f1f5f9; /* slate-100 */
+            border-radius: 0.5rem;
+            min-height: 50px;
+            word-wrap: break-word;
+        }
+        /* Message Box styles */
+        #messageBox {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            text-align: center;
+            transition: opacity 0.5s;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+        }
+        #messageBox.show {
+            opacity: 1;
+            height: auto;
+        }
+        .message-success {
+            background-color: #dcfce7; /* green-100 */
+            color: #166534; /* green-800 */
+        }
+        .message-error {
+            background-color: #fee2e2; /* red-100 */
+            color: #991b1b; /* red-800 */
+        }
+    </style>
+</head>
+<body>
 
-    function sortAges() {
-      ages.sort((a, b) => a - b);
-      updateAgesDisplay();
-    }
+    <div class="container">
+        <h1>User Management System</h1>
 
-    function filterAdults() {
-      const adults = ages.filter(age => age >= 18);
-      document.getElementById("agesOutput").textContent = "Adults: " + JSON.stringify(adults);
-    }
+        <!-- Message Box for notifications -->
+        <div id="messageBox"></div>
 
-    function clearAges() {
-      ages = [];
-      updateAgesDisplay();
-    }
+        <!-- User Ages Card -->
+        <div class="card">
+            <h2>User Ages</h2>
+            <div class="flex flex-wrap items-center gap-4">
+                <input type="number" id="ageInput" placeholder="Enter Age" class="flex-grow">
+                <button onclick="addAge()" class="button">Add Age</button>
+                <button onclick="sortAges()" class="button button-secondary">Sort Ages</button>
+                <button onclick="filterAdults()" class="button button-secondary">Filter Adults (18+)</button>
+                <button onclick="clearAges()" class="button button-secondary">Clear</button>
+            </div>
+            <p id="agesOutput" class="output">Ages: []</p>
+        </div>
 
-    function updateAgesDisplay() {
-      document.getElementById("agesOutput").textContent = "Ages: " + JSON.stringify(ages);
-    }
+        <!-- User Profile Card -->
+        <div class="card">
+            <h2>User Profile</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <input type="text" id="name" placeholder="Name">
+                <input type="number" id="userAge" placeholder="Age">
+                <input type="email" id="email" placeholder="Email">
+            </div>
+            <div class="flex flex-wrap items-center gap-4 mb-4">
+                <button onclick="createUser()" class="button">Create User</button>
+                <button onclick="printUser()" class="button button-secondary">Print Details</button>
+            </div>
+             <div class="flex flex-wrap items-center gap-4">
+                <input type="email" id="newEmail" placeholder="Enter New Email" class="flex-grow">
+                <button onclick="updateUser()" class="button">Update Email</button>
+            </div>
+            <p id="userOutput" class="output">User: None</p>
+        </div>
+    </div>
 
-    // User object
-    let user = {};
+    <script>
+        // --- Global State ---
+        let ages = [];
+        let user = {}; // User object
 
-    function createUser() {
-      const name = document.getElementById("name").value;
-      const age = parseInt(document.getElementById("userAge").value);
-      const email = document.getElementById("email").value;
+        const ageInputElement = document.getElementById("ageInput");
+        const agesOutputElement = document.getElementById("agesOutput");
+        const userOutputElement = document.getElementById("userOutput");
+        const messageBoxElement = document.getElementById("messageBox");
 
-      age.addEventListner()
+        function displayMessage(message, type) {
+            messageBoxElement.textContent = message;
+            messageBoxElement.className = `message-${type} show`; // Add class to show and style
+            setTimeout(() => {
+                messageBoxElement.className = '';
+            }, 3000);
+        }
+        function addAge() {
+            const age = parseInt(ageInputElement.value);
+            if (!isNaN(age) && age > 0) {
+                ages.push(age);
+                updateAgesDisplay();
+                ageInputElement.value = ""; // Clear input field after adding
+            } else {
+                displayMessage("Please enter a valid, positive age.", "error");
+            }
+        }
 
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(email)) {
-        alert("Please enter a valid email address.");
-        return;
-      }
+        function sortAges() {
+            ages.sort((a, b) => a - b);
+            updateAgesDisplay();
+        }
 
-      if (name && !isNaN(age) && email) {
-        user = {
-          name: name,
-          age: age,
-          email: email,
-          printDetails: function () {
-            return `Name: ${this.name}, Age: ${this.age}, Email: ${this.email}`;
-          }
-        };
-        document.getElementById("userOutput").textContent = "User created.";
-      }
+        function filterAdults() {
+            const adults = ages.filter(age => age >= 18);
+            agesOutputElement.textContent = "Adults (18+): " + JSON.stringify(adults);
+        }
 
+        function clearAges() {
+            ages = [];
+            updateAgesDisplay();
+        }
 
-    }
+        function updateAgesDisplay() {
+            agesOutputElement.textContent = "Ages: " + JSON.stringify(ages);
+        }
 
-    function updateUser() {
-      const newEmail = prompt("Enter new email:");
-      if (user.email && newEmail) {
-        user.email = newEmail;
-        document.getElementById("userOutput").textContent = "Email updated.";
-      }
-    }
+        function createUser() {
+            const name = document.getElementById("name").value.trim();
+            const age = parseInt(document.getElementById("userAge").value);
+            const email = document.getElementById("email").value.trim();
 
-    function printUser() {
-      if (user.printDetails) {
-        document.getElementById("userOutput").textContent = user.printDetails();
-      } else {
-        document.getElementById("userOutput").textContent = "No user found.";
-      }
-    }
-  </script>
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                displayMessage("Please enter a valid email address.", "error");
+                return;
+            }
+
+            if (name && !isNaN(age) && age > 0 && email) {
+                user = {
+                    name: name,
+                    age: age,
+                    email: email,
+                    printDetails: function() {
+                        return `Name: ${this.name}, Age: ${this.age}, Email: ${this.email}`;
+                    }
+                };
+                displayMessage("User created successfully!", "success");
+                userOutputElement.textContent = user.printDetails();
+            } else {
+                displayMessage("Please fill in all user fields with valid data.", "error");
+            }
+        }
+
+        function updateUser() {
+            const newEmail = document.getElementById("newEmail").value.trim();
+            
+            if (!user.name) {
+                displayMessage("Please create a user first.", "error");
+                return;
+            }
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (newEmail && emailPattern.test(newEmail)) {
+                user.email = newEmail;
+                displayMessage("Email updated successfully!", "success");
+                printUser(); // Update display with new details
+                document.getElementById("newEmail").value = ""; // Clear input
+            } else {
+                displayMessage("Please enter a valid new email address.", "error");
+            }
+        }
+
+        function printUser() {
+            if (user.printDetails) {
+                userOutputElement.textContent = user.printDetails();
+            } else {
+                displayMessage("No user found. Please create one.", "error");
+                userOutputElement.textContent = "User: None";
+            }
+        }
+    </script>
 </body>
+</html>
